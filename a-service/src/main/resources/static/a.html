@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A 服务</title>
+</head>
+<body>
+
+<button id="sendRequest">A 服务按钮</button>
+
+<script>
+    document.getElementById('sendRequest').addEventListener('click', function() {
+        // 跨域请求的目标URL（请替换为实际支持CORS的URL）
+        var url = 'https://example.com/api/data'; // 示例URL，请替换为实际URL
+
+        // 发送AJAX请求
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true); // 使用GET方法，异步请求
+
+        // 处理请求成功完成的情况
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // 请求成功，处理响应数据
+                console.log(xhr.responseText);
+            } else {
+                // 请求失败，处理错误
+                console.error('请求失败:', xhr.statusText);
+            }
+        };
+
+        // 处理网络错误
+        xhr.onerror = function() {
+            console.error('网络错误');
+            window.location.href = 'http://localhost:8080?back_url=http://localhost:8081'
+        };
+
+        // 发送请求
+        xhr.send();
+    });
+</script>
+
+</body>
+</html>

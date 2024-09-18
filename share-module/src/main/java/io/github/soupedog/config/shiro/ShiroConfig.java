@@ -95,7 +95,7 @@ public class ShiroConfig {
         chainDefinition.addPathDefinition("/time-entity/**", "authc");
 
         // 所有请求都需要经过
-//        chainDefinition.addPathDefinition("/**", "myAccessControl,perms,roles");
+//        chainDefinition.addPathDefinition("/api/**", "myAccessControl,perms,roles");
 
         return chainDefinition;
     }
