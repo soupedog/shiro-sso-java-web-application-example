@@ -1,6 +1,6 @@
 package io.github.soupedog.client;
 
-import io.github.soupedog.config.FeignConfig;
+import io.github.soupedog.config.feign.FeignConfig;
 import io.github.soupedog.domain.dto.LoginRequest;
 import io.github.soupedog.domain.dto.LoginResponse;
 import org.springframework.cloud.openfeign.FeignClient;

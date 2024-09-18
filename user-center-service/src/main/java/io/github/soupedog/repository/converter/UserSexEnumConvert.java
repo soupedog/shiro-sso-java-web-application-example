@@ -2,7 +2,7 @@ package io.github.soupedog.repository.converter;
 
 
 import io.github.soupedog.domain.enums.UserSexEnum;
-import jakarta.persistence.AttributeConverter;
+import javax.persistence.AttributeConverter;
 
 /**
  * 此接口泛型：第一个是 PO 对象属性类型；第二个是数据库字段类型(会影响到自动建表时具体类型)

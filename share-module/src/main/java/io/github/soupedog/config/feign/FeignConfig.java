@@ -1,4 +1,4 @@
-package io.github.soupedog.config;
+package io.github.soupedog.config.feign;
 
 import feign.Contract;
 import feign.Logger;

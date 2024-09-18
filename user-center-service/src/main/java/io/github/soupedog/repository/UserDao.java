@@ -1,7 +1,7 @@
 package io.github.soupedog.repository;
 
 import io.github.soupedog.domain.po.User;
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
