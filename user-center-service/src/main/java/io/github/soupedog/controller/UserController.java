@@ -46,7 +46,7 @@ public class UserController {
     // 若干分钟的毫秒数
     private long min = 1000 * 60 * 5;
 
-    @PostMapping("/user/validate")
+    @PostMapping("/user/check")
     public ServiceResponse<LoginResponse> validLoginInfo(@RequestBody LoginInfo loginInfo) {
         User user = userDao.findOne(Example.of(User.builder().name(loginInfo.getName()).build())).orElseThrow(() -> new RuntimeException("账号密码有误或不存在"));
 

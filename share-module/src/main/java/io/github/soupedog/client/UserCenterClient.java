@@ -17,6 +17,6 @@ public interface UserCenterClient {
     @PostMapping(value = "${user-center.api.login.path}")
     LoginResponse login(@RequestBody LoginRequest loginRequest);
 
-    @PostMapping
+    @PostMapping("${user-center.api.check.path}")
     LoginResponse validLoginInfo(@RequestBody LoginInfo loginInfo);
 }
