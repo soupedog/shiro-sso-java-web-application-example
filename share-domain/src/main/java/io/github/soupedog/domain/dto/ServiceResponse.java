@@ -11,7 +11,7 @@ import lombok.Setter;
  * 描述
  *
  * @author Xavier
- * @date 2024/9/18
+ * @date 2024/9/24
  * @since 1.0
  */
 @Getter
@@ -20,8 +20,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
-    private String token;
-    private String refreshKey;
-    private UserDTO user;
+public class ServiceResponse<T> {
+    private String msg;
+    private T main;
 }

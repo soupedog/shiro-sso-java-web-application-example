@@ -1,6 +1,7 @@
 package io.github.soupedog.client;
 
 import io.github.soupedog.config.feign.FeignConfig;
+import io.github.soupedog.domain.dto.LoginInfo;
 import io.github.soupedog.domain.dto.LoginRequest;
 import io.github.soupedog.domain.dto.LoginResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -15,4 +16,7 @@ public interface UserCenterClient {
 
     @PostMapping(value = "${user-center.api.login.path}")
     LoginResponse login(@RequestBody LoginRequest loginRequest);
+
+    @PostMapping
+    LoginResponse validLoginInfo(@RequestBody LoginInfo loginInfo);
 }

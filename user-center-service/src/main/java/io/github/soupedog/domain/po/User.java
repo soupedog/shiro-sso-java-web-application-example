@@ -1,18 +1,9 @@
 package io.github.soupedog.domain.po;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import io.github.soupedog.repository.converter.UserSexEnumConvert;
 import io.github.soupedog.domain.enums.UserSexEnum;
+import io.github.soupedog.repository.converter.UserSexEnumConvert;
 import io.github.soupedog.utils.LongTimeStampSerializer;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Generated;
@@ -22,6 +13,16 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
@@ -49,6 +50,14 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     @Convert(converter = UserSexEnumConvert.class)
     private UserSexEnum userSex;
+    /**
+     * 身份令牌
+     */
+    private String token;
+    /**
+     * 身份令牌刷新秘钥
+     */
+    private String refreshKey;
     // 其实没什么卵用，复杂时间修改还得看自定义
     @CreatedDate
     @JsonSerialize(using = LongTimeStampSerializer.class)

@@ -6,15 +6,13 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.lang.util.ByteSource;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 
+import static io.github.soupedog.domain.constant.AccountConstant.SALT;
+
 
 public class MyRealm extends AuthorizingRealm {
-    public static final String ALGORITHM_NAME = "SHA-256";
-    public static final ByteSource SALT = ByteSource.Util.bytes("AAAA");
-    public static final Integer HASH_ITERATIONS = 2;
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {

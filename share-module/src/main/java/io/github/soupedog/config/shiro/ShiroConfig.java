@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.soupedog.config.shiro.MyRealm.ALGORITHM_NAME;
-import static io.github.soupedog.config.shiro.MyRealm.HASH_ITERATIONS;
+import static io.github.soupedog.domain.constant.AccountConstant.ALGORITHM_NAME;
+import static io.github.soupedog.domain.constant.AccountConstant.HASH_ITERATIONS;
 
 
 @Configuration
