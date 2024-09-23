@@ -36,7 +36,7 @@ import static io.github.soupedog.domain.constant.AccountConstant.SALT;
 public class UserController {
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ServiceResponse<?> hyggeExceptionHandler(Throwable e) {
+    public ServiceResponse<?> throwableHandler(Throwable e) {
         return ServiceResponse.builder().msg(e.getMessage()).build();
     }
 
