@@ -1,7 +1,7 @@
 package io.github.soupedog.domain.dto;
 
 
-import io.github.soupedog.domain.enums.UserSexEnum;
+import io.github.soupedog.domain.enums.UserTypeEnum;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,11 +24,11 @@ import lombok.Setter;
 @Schema(title = "用户信息", description = "用户的可见信息")
 public class UserDTO {
     @Schema(title = "用户唯一标识", example = "2")
-    private Long uid;
+    private String uno;
     @Schema(title = "用户名称", example = "李四")
     private String name;
     @Schema(title = "111", example = "SECRET")
-    private UserSexEnum userSex;
+    private UserTypeEnum userType;
     @Schema(title = "创建时间", example = "1642753537299")
     private Long createTs;
     @Schema(title = "最后修改时间", example = "1642753537299")

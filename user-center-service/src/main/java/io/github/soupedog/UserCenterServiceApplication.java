@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
+ * "http://localhost:8080/swagger-ui.html"
+ * <p>
  * UserCenterService 启动入口
  *
  * @author Xavier

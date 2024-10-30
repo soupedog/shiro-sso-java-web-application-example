@@ -1,6 +1,7 @@
 package io.github.soupedog.config.shiro;
 
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
+import io.github.soupedog.client.UserCenterClient;
+import jakarta.servlet.Filter;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -13,14 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.Filter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static io.github.soupedog.domain.constant.AccountConstant.ALGORITHM_NAME;
-import static io.github.soupedog.domain.constant.AccountConstant.HASH_ITERATIONS;
-
 
 @Configuration
 public class ShiroConfig {
@@ -29,6 +25,7 @@ public class ShiroConfig {
      */
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(
+            UserCenterClient userCenterClient,
             SecurityManager securityManager,
             @Autowired(required = false) ShiroFilterConfiguration shiroFilterConfiguration,
             ShiroFilterChainDefinition shiroFilterChainDefinition,
@@ -43,10 +40,17 @@ public class ShiroConfig {
         filterFactoryBean.setShiroFilterConfiguration(shiroFilterConfiguration == null ? new ShiroFilterConfiguration() : shiroFilterConfiguration);
         filterFactoryBean.setGlobalFilters(Collections.singletonList(DefaultFilter.invalidRequest.name()));
         filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
+        MyAccessControlFilter myAccessControlFilter = new MyAccessControlFilter(userCenterClient);
+        myAccessControlFilter.setLoginUrl("http://localhost:8080/login?back_url=http://localhost:8081/");
+
+
+        MyLoginFilter myLoginFilter = new MyLoginFilter();
+        myLoginFilter.setLoginUrl("http://localhost:8080/sso-login");
+        myLoginFilter.setSuccessUrl("/");
 
         // 添加自定义的 Filter
-        filterMap.put("myAccessControl", new MyAccessControlFilter());
-        filterMap.put("myFormAuthentication", new MyFormAuthenticationFilter());
+        filterMap.put("myAccessControl", myAccessControlFilter);
+        filterMap.put("myFormAuthentication", myLoginFilter);
         filterMap.put("myLogout", new MyLogoutFilter());
 
         filterFactoryBean.setFilters(filterMap);
@@ -61,11 +65,14 @@ public class ShiroConfig {
     @Bean
     public Realm myRealm() {
         MyRealm result = new MyRealm();
-        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
-        // 此处演示
-        matcher.setHashAlgorithmName(ALGORITHM_NAME);
-        // 重复循环 HASH_ITERATIONS 次 hash 做混淆(上一轮 hash 的出参进行下一轮 hash 的入参)
-        matcher.setHashIterations(HASH_ITERATIONS);
+        result.setCachingEnabled(false);
+        //        HashedCredentialsMatcher matcher = new HashedCredentialsMatcher();
+        //        // 此处演示
+        //        matcher.setHashAlgorithmName(ALGORITHM_NAME);
+        //        // 重复循环 HASH_ITERATIONS 次 hash 做混淆(上一轮 hash 的出参进行下一轮 hash 的入参)
+        //        matcher.setHashIterations(HASH_ITERATIONS);
+
+        MyMatcher matcher = new MyMatcher();
         result.setCredentialsMatcher(matcher);
         return result;
     }
@@ -78,7 +85,6 @@ public class ShiroConfig {
     @Bean
     public ShiroFilterChainDefinition shiroFilterChainDefinition() {
         DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
-
         //        // logged in users with the 'admin' role
         //        chainDefinition.addPathDefinition("/admin/**", "authc, roles[admin]");
         //
@@ -93,9 +99,10 @@ public class ShiroConfig {
         // file-entity、time-entity 需要基本的登录
         chainDefinition.addPathDefinition("/file-entity/**", "authc");
         chainDefinition.addPathDefinition("/time-entity/**", "authc");
+        chainDefinition.addPathDefinition("/sso-login", "myFormAuthentication");
 
         // 所有请求都需要经过
-//        chainDefinition.addPathDefinition("/api/**", "myAccessControl,perms,roles");
+        chainDefinition.addPathDefinition("/api/**", "myAccessControl,perms,roles");
 
         return chainDefinition;
     }

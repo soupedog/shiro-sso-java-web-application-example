@@ -2,9 +2,10 @@ package io.github.soupedog.command;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.soupedog.domain.enums.UserSexEnum;
+import io.github.soupedog.domain.enums.UserTypeEnum;
 import io.github.soupedog.domain.po.User;
 import io.github.soupedog.repository.UserDao;
+import io.github.soupedog.util.AESUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.domain.Example;
@@ -29,10 +30,11 @@ public class StartCommand implements CommandLineRunner {
     @Override
     public void run(String... args) {
         User user = new User();
+        user.setUno("U0001");
         user.setName("张三");
-        // 对应密码 aaa
-        user.setPassword("c1a818a88adb66de711940dae5d22a2213c5353b72bf1b0c776626b8f3739087");
-        user.setUserSex(UserSexEnum.SECRET);
+        user.setAccount("zhzs");
+        user.setPassword(AESUtil.encrypt("mm"));
+        user.setUserType(UserTypeEnum.ROOT);
 
         userDao.save(user);
 

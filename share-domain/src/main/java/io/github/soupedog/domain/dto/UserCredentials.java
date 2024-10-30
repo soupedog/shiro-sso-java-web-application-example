@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 描述
+ * 用户鉴权信息
  *
  * @author Xavier
- * @date 2024/9/18
+ * @date 2024/9/24
  * @since 1.0
  */
 @Getter
@@ -20,8 +20,9 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginResponse {
+public class UserCredentials {
+    private String uno;
     private String token;
+    private Long tokenETS;
     private String refreshKey;
-    private UserDTO user;
 }
