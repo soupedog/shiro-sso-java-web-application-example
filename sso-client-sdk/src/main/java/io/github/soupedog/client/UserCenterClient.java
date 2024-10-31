@@ -1,6 +1,5 @@
 package io.github.soupedog.client;
 
-import io.github.soupedog.domain.dto.LoginInInfo;
 import io.github.soupedog.domain.dto.ServiceResponse;
 import io.github.soupedog.domain.dto.UserCredentials;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,7 @@ import java.io.IOException;
 @Component
 public class UserCenterClient {
     private RestTemplate restTemplate;
-    private ParameterizedTypeReference<ServiceResponse<LoginInInfo>> typeRef = new ParameterizedTypeReference<>() {
+    private ParameterizedTypeReference<ServiceResponse<String>> typeRef = new ParameterizedTypeReference<>() {
     };
 
     @Value("#{'${user-center.api.url.prefix}' + '${user-center.api.check.path}'}")
@@ -41,7 +40,7 @@ public class UserCenterClient {
         });
     }
 
-    public ResponseEntity<ServiceResponse<LoginInInfo>> validLoginInfo(UserCredentials userCredentials) {
+    public ResponseEntity<ServiceResponse<String>> validLoginInfo(UserCredentials userCredentials) {
         String url = UriComponentsBuilder
                 .fromUriString(checkUrl)
                 // ``encode()`` 默认标记 utf8 编码

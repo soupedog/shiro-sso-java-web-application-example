@@ -1,0 +1,63 @@
+@charset "utf-8";
+body {
+    margin: 0 !important;
+}
+
+.floatToLeft {
+    display: inline-block;
+    float: left;
+}
+
+.floatToRight {
+    display: inline-block;
+    float: right;
+}
+
+.clearBoth {
+    clear: both;
+}
+
+.clearFix:after {
+    content: "";
+    display: block;
+    height: 0;
+    overflow: hidden;
+    clear: both
+}
+
+.clearFix {
+    *zoom: 1
+}
+
+.backgroundTransparent {
+    background-color: transparent;
+}
+
+.textCenter {
+    text-align: center;
+}
+
+/*文本自动换行*/
+.autoWrap {
+    word-wrap: break-word
+}
+
+/*文本溢出行内省略*/
+.autoOmit {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/*文本溢出 2 行后的部分省略*/
+.autoOmit_2 {
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.pointer {
+    cursor: pointer;
+}

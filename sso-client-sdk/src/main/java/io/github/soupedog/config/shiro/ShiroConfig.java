@@ -23,6 +23,8 @@ import java.util.Map;
 public class ShiroConfig {
     @Value("${user-center.back-url}")
     private String backUrl;
+    @Value("${user-center.api.url.prefix}")
+    private String loginUrl;
 
     /**
      * @see AbstractShiroWebFilterConfiguration#shiroFilterFactoryBean()
@@ -44,13 +46,11 @@ public class ShiroConfig {
         filterFactoryBean.setShiroFilterConfiguration(shiroFilterConfiguration == null ? new ShiroFilterConfiguration() : shiroFilterConfiguration);
         filterFactoryBean.setGlobalFilters(Collections.singletonList(DefaultFilter.invalidRequest.name()));
         filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
-        MyAccessControlFilter myAccessControlFilter = new MyAccessControlFilter(userCenterClient);
-        myAccessControlFilter.setLoginUrl("http://localhost:8080/login?back_url=" + backUrl);
-
+        MyAccessControlFilter myAccessControlFilter = new MyAccessControlFilter(loginUrl, backUrl, userCenterClient);
 
         MyLoginFilter myLoginFilter = new MyLoginFilter();
         myLoginFilter.setLoginUrl("http://localhost:8080/sso-login");
-        myLoginFilter.setSuccessUrl("/");
+        myLoginFilter.setSuccessUrl("");
 
         // 添加自定义的 Filter
         filterMap.put("myAccessControl", myAccessControlFilter);

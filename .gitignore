@@ -6,3 +6,5 @@
 *.iml
 out
 gen
+/front-end/package-lock.json
+/front-end/node_modules/

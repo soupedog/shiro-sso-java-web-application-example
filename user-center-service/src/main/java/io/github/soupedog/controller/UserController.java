@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,6 +31,7 @@ import java.util.UUID;
  */
 @ControllerAdvice
 @RestController
+@CrossOrigin("*")
 public class UserController {
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -47,7 +49,7 @@ public class UserController {
      * 后端间直连，无需密文传输
      */
     @PostMapping("/user/check")
-    public ServiceResponse<LoginInInfo> validLoginInfo(@RequestBody UserCredentials userCredentials) {
+    public ServiceResponse<String> validLoginInfo(@RequestBody UserCredentials userCredentials) {
         User user = userDao.findOne(Example.of(User.builder().uno(userCredentials.getUno()).build())).orElseThrow(() -> new RuntimeException("账号密码有误或不存在"));
 
         boolean isTokenActive = System.currentTimeMillis() < user.getTokenETS();
@@ -91,8 +93,13 @@ public class UserController {
                             .build()
                     ).build();
 
-            return ServiceResponse.<LoginInInfo>builder()
-                    .main(loginInInfo)
+            String json = JsonUtil.formatAsString(loginInInfo);
+            // 经前端跳转间接进行后端服务间的信息传递，需要密文传输
+            // Base64 默认规范有换行约束、且部分字符与 URL 字符冲突，故 AES 中使用的 Base64.getUrlEncoder()
+            String afterEncrypt = AESUtil.encrypt(json);
+
+            return ServiceResponse.<String>builder()
+                    .main(afterEncrypt)
                     .build();
         }
 
