@@ -27,14 +27,14 @@
                 // 请求失败，处理错误
                 console.error('请求失败:', xhr.statusText);
                 // 约定 403 代表需要登录
-                window.location.href = 'http://localhost:8080/login?back_url=http://localhost:8081/'
+                window.location.href = 'http://localhost:8080/login?back_url=http://localhost:8082/'
             }
         };
 
         // 处理网络错误
         xhr.onerror = function() {
             console.error('网络错误');
-            window.location.href = 'http://localhost:8080/login?back_url=http://localhost:8081/'
+            window.location.href = 'http://localhost:8080/login?back_url=http://localhost:8082/'
         };
 
         // 发送请求
