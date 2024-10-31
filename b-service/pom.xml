@@ -28,7 +28,7 @@
         </dependency>
         <dependency>
             <groupId>io.github.soupedog</groupId>
-            <artifactId>share-module</artifactId>
+            <artifactId>sso-client-sdk</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

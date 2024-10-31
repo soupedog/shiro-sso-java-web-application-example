@@ -12,8 +12,8 @@
         <module>a-service</module>
         <module>b-service</module>
         <module>user-center-service</module>
+        <module>sso-client-sdk</module>
         <module>share-module</module>
-        <module>share-domain</module>
     </modules>
 
     <properties>
