@@ -11,6 +11,7 @@ import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.web.config.ShiroFilterConfiguration;
 import org.apache.shiro.web.filter.mgt.DefaultFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,6 +21,9 @@ import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
+    @Value("${user-center.back-url}")
+    private String backUrl;
+
     /**
      * @see AbstractShiroWebFilterConfiguration#shiroFilterFactoryBean()
      */
@@ -41,7 +45,7 @@ public class ShiroConfig {
         filterFactoryBean.setGlobalFilters(Collections.singletonList(DefaultFilter.invalidRequest.name()));
         filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
         MyAccessControlFilter myAccessControlFilter = new MyAccessControlFilter(userCenterClient);
-        myAccessControlFilter.setLoginUrl("http://localhost:8080/login?back_url=http://localhost:8081/");
+        myAccessControlFilter.setLoginUrl("http://localhost:8080/login?back_url=" + backUrl);
 
 
         MyLoginFilter myLoginFilter = new MyLoginFilter();
