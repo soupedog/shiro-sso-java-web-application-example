@@ -5,7 +5,44 @@ const instance = axios.create({
     headers: {'auth-no-redirect': 'true'}
 });
 
-instance.interceptors.response.use(function (response) {
+const instance_A = axios.create({
+    headers: {'auth-no-redirect': 'true'}
+});
+
+const instance_B = axios.create({
+    headers: {'auth-no-redirect': 'true'}
+});
+
+instance_A.interceptors.response.use(function (response) {
+    let status = response.status;
+    alert(status)
+    alert(status == 403)
+
+    if (status == 200) {
+        return response;
+    } else if (status == 403) {
+        return Promise.reject(response);
+    } else {
+        message.error(response.data, 5);
+        return Promise.reject(response);
+    }
+}, function (error) {
+    if (error.response.status === 403) {
+        let info = error.response.data["main"];
+        let backUrl = "http://localhost:8081"
+        if (info == null) {
+            window.location.href = "http://localhost:8080/login?back_url=" + backUrl;
+        } else {
+            window.location.href = "http://localhost:8080/login?back_url=" + backUrl + "&info=" + info;
+        }
+    }
+
+    // 对响应错误做点什么
+    message.error(error.message, 5);
+    return Promise.reject(error);
+});
+
+instance_B.interceptors.response.use(function (response) {
     let status = response.status;
 
     if (status == 200) {
@@ -17,6 +54,16 @@ instance.interceptors.response.use(function (response) {
         return Promise.reject(response);
     }
 }, function (error) {
+    if (error.response.status === 403) {
+        let info = error.response.data["main"];
+        let backUrl = "http://localhost:8082"
+        if (info == null) {
+            window.location.href = "http://localhost:8080/login?back_url=" + backUrl;
+        } else {
+            window.location.href = "http://localhost:8080/login?back_url=" + backUrl + "&info=" + info;
+        }
+    }
+
     // 对响应错误做点什么
     message.error(error.message, 5);
     return Promise.reject(error);
@@ -67,5 +114,25 @@ export class LoginService {
                     }
                 }
             )
+    }
+}
+
+export class AService {
+    static clickButton() {
+        instance_A.get("http://localhost:8081/api/a/needlogin")
+            .then(response => {
+                message.success(response.data);
+            })
+
+    }
+}
+
+export class BService {
+    static clickButton() {
+        instance_B.get("http://localhost:8082/api/b/needlogin")
+            .then(response => {
+                message.success(response.data);
+            })
+
     }
 }

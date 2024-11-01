@@ -1,6 +1,5 @@
 package io.github.soupedog.config.shiro;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.soupedog.domain.dto.LoginInInfo;
 import io.github.soupedog.util.AESUtil;
 import io.github.soupedog.util.JsonUtil;
@@ -13,11 +12,9 @@ import org.apache.shiro.web.util.WebUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * 登录操作
+ * 用于接收远端前端页面传递的登录信息并在当前系统登陆
  */
 public class MyLoginFilter extends AuthenticationFilter {
-    private static final ObjectMapper mapper = new ObjectMapper();
-
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         // 远端用户服务完成登录后会携带登录信息访问该过滤器指定的路径，进而把成功登陆的信息同步给接入了 SSO 的下游服务

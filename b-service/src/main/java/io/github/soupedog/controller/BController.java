@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @CrossOrigin("*")
 @RestController
-public class AController {
-    @GetMapping(value = "/api/a/needlogin")
+public class BController {
+    @GetMapping(value = "/api/b/needlogin")
     public String loginResponse() {
         return "允许访问";
     }

@@ -22,12 +22,12 @@ let newLoginInfo = BaseUtil.getQueryParam("info")
 if (newLoginInfo != null) {
     // 刷新登陆信息
     localStorage.setItem("rememberMe", newLoginInfo);
-    window.location.href = backUrl + "sso-login?info=" + newLoginInfo;
+    window.location.href = backUrl!;
 } else {
     let oldLoginInfo = localStorage.getItem("rememberMe");
     if (oldLoginInfo != null) {
         // 存在旧登录信息，直接跳转
-        window.location.href = backUrl + "sso-login?info=" + oldLoginInfo;
+        window.location.href = backUrl + "/sso-login?info=" + oldLoginInfo;
     }
 
     const container: Element | null = document.getElementById('root');
@@ -50,9 +50,9 @@ if (newLoginInfo != null) {
                             onFinish={(val) => {
                                 LoginService.login(val.account, val.password,
                                     (data) => {
-                                        localStorage.setItem("rememberMe", data?.msg!);
+                                        localStorage.setItem("rememberMe", data!.main as string);
                                         console.log(data)
-                                        window.location.href = backUrl + "sso-login?info=" + newLoginInfo;
+                                        window.location.href = backUrl + "/sso-login?info=" + localStorage.getItem("rememberMe");
                                     });
                             }}
                             onFinishFailed={() => {

@@ -26,8 +26,8 @@ public class MyAccessControlFilter extends PathMatchingFilter {
     /**
      * 实际上仅作为 loginUrl 的 queryString
      */
-    private String backUrl;
-    private UserCenterClient userCenterClient;
+    private final String backUrl;
+    private final UserCenterClient userCenterClient;
 
     public MyAccessControlFilter(String loginUrl, String backUrl, UserCenterClient userCenterClient) {
         this.loginUrl = loginUrl;
@@ -52,12 +52,12 @@ public class MyAccessControlFilter extends PathMatchingFilter {
                 ResponseEntity<ServiceResponse<String>> validateResult = userCenterClient.validLoginInfo(loginInInfo.getCredentials());
                 if (HttpStatus.OK.equals(validateResult.getStatusCode())) {
                     loginSuccess = true;
-                    if (validateResult.getBody() != null && validateResult.getBody().getMain() == null) {
-                        // 登陆信息无误且无需刷新身份信息
-                        needRedirectToLoginPage = false;
-                    } else {
+                    if (validateResult.getBody() != null && validateResult.getBody().getMain() != null) {
                         // 身份过期了，但服务端已自动根据 refreshKey 刷新登陆信息，需要重新在前端缓存
                         newLoginInfo = validateResult.getBody().getMain();
+                    } else {
+                        // 登陆信息无误且无需刷新身份信息
+                        needRedirectToLoginPage = false;
                     }
                 }
             } catch (Exception e) {
@@ -70,7 +70,12 @@ public class MyAccessControlFilter extends PathMatchingFilter {
                 // 如 ajax 等主页发起的请求无法让主页面直接跳转，需要前端自己进行页面跳转
                 markAsClientEndNeedRedirect(WebUtils.toHttp(response), newLoginInfo);
             } else {
-                WebUtils.issueRedirect(request, response, backUrl);
+                // 由服务端直接转发
+                if (newLoginInfo != null) {
+                    WebUtils.issueRedirect(request, response, loginUrl + "?back_url=" + backUrl + "&info=" + newLoginInfo);
+                } else {
+                    WebUtils.issueRedirect(request, response, loginUrl + "?back_url=" + backUrl);
+                }
             }
         }
 
@@ -95,6 +100,8 @@ public class MyAccessControlFilter extends PathMatchingFilter {
     private void markAsClientEndNeedRedirect(HttpServletResponse response, String newLoginInfo) {
         // 与前端商量好的状态码
         response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setCharacterEncoding("UTF-8");
+
         String responseBody = newLoginInfo == null ? "{\"msg\":\"请前往登录页进行登陆\"}" :
                 "{\"msg\":\"请前往登陆页刷新缓存\",\"main\":\"" + newLoginInfo + "\"}";
         try (PrintWriter out = response.getWriter()) {
