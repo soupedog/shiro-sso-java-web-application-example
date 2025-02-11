@@ -2,6 +2,13 @@
 
 基于 Shiro 的 SSO(SingleSignOn) Java Web 应用示例
 
+**Warning：**
+
+此处未编写一个前端机制： `a.html`/ `b.html` 登陆后主动去刷新 `login.html` 中的缓存信息再调回业务页面，本项目主要关注后端，忽略了该逻辑。
+
+出现未更新登陆信息缓存引发了异常可尝试访问 `http://localhost:8080/?reset=true` 手动清空 `login.html` 的登录缓存
+
+
 **Tips:**
 
 - `H2 数据库` 相关
