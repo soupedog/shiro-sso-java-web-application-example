@@ -3,14 +3,18 @@
 基于 Shiro 的 SSO(SingleSignOn) Java Web 应用示例。
 
 试验请先启动三个服务：
+
 - [a-service](a-service)
 - [b-service](b-service)
 - [user-center-service](user-center-service)
 
-
-a、b 服务分别提供一个已登录用户才允许点击的按钮。
+a、b 服务分别提供一个已登录用户才允许点击的按钮，点击后正常应出现气泡提示框 "允许访问"
 
 一次登录后即可在 a、b 系统中共享登录信息。
+默认内置账号：
+
+- AC:`zhzs`
+- PW:`mm`
 
 [A 系统前端页面](http://localhost:8081/)
 
