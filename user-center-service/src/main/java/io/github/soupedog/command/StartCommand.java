@@ -34,6 +34,9 @@ public class StartCommand implements CommandLineRunner {
         user.setName("张三");
         user.setAccount("zhzs");
         user.setPassword(AESUtil.encrypt("mm"));
+        // 初始一个已过期 token
+        user.setTokenETS(0L);
+        user.setRefreshKey("");
         user.setUserType(UserTypeEnum.ROOT);
 
         userDao.save(user);

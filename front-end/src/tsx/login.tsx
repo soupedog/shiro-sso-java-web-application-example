@@ -12,24 +12,36 @@ if (backUrl == null) {
     message.error("回跳链接不可为空！")
 }
 
-let reset = BaseUtil.getQueryParam("reset")
-if (reset != null) {
-    localStorage.removeItem("rememberMe");
+let oldLoginInfo = localStorage.getItem("rememberMe");
+
+showUI();
+
+if (oldLoginInfo != null) {
+    LoginService.validateAndAutoRefresh(oldLoginInfo,
+        (data) => {
+            message.info("已获取登陆用户信息，正在跳转，请稍后")
+
+            // @ts-ignore
+            let main: string | undefined = data!.main;
+            // 后端自动刷新了登陆信息
+            if (main) {
+                // 刷新登陆信息
+                localStorage.setItem("rememberMe", main);
+                // 用已验证的登陆信息，直接跳转
+                window.location.href = backUrl + "/sso-login?info=" + main;
+            } else {
+                // 后端未刷新且返回了成功，旧的登陆信息有效
+                // 用已验证的登陆信息，直接跳转
+                window.location.href = backUrl + "/sso-login?info=" + oldLoginInfo;
+            }
+        },
+        (data) => {
+            localStorage.removeItem("rememberMe");
+            message.info("账号信息已失效，请重新登陆")
+        });
 }
 
-let newLoginInfo = BaseUtil.getQueryParam("info")
-
-if (newLoginInfo != null) {
-    // 刷新登陆信息
-    localStorage.setItem("rememberMe", newLoginInfo);
-    window.location.href = backUrl!;
-} else {
-    let oldLoginInfo = localStorage.getItem("rememberMe");
-    if (oldLoginInfo != null) {
-        // 存在旧登录信息，直接跳转
-        window.location.href = backUrl + "/sso-login?info=" + oldLoginInfo;
-    }
-
+function showUI() {
     const container: Element | null = document.getElementById('root');
 
     if (container != null) {

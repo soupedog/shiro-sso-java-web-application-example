@@ -22,16 +22,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 public class MyAccessControlFilter extends PathMatchingFilter {
-    private String loginUrl;
-    /**
-     * 实际上仅作为 loginUrl 的 queryString
-     */
-    private final String backUrl;
+    private String logoutPath;
     private final UserCenterClient userCenterClient;
 
-    public MyAccessControlFilter(String loginUrl, String backUrl, UserCenterClient userCenterClient) {
-        this.loginUrl = loginUrl;
-        this.backUrl = backUrl;
+    public MyAccessControlFilter(String logoutPath, UserCenterClient userCenterClient) {
+        this.logoutPath = logoutPath;
         this.userCenterClient = userCenterClient;
     }
 
@@ -43,7 +38,6 @@ public class MyAccessControlFilter extends PathMatchingFilter {
 
     protected boolean loginCheck(ServletRequest request, ServletResponse response) throws IOException {
         boolean loginSuccess = false;
-        boolean needRedirectToLoginPage = true;
 
         LoginInInfo loginInInfo = SSOUtil.getLoginInfo();
         String newLoginInfo = null;
@@ -52,35 +46,24 @@ public class MyAccessControlFilter extends PathMatchingFilter {
                 ResponseEntity<ServiceResponse<String>> validateResult = userCenterClient.validLoginInfo(loginInInfo.getCredentials());
                 if (HttpStatus.OK.equals(validateResult.getStatusCode())) {
                     loginSuccess = true;
-                    if (validateResult.getBody() != null && validateResult.getBody().getMain() != null) {
-                        // 身份过期了，但服务端已自动根据 refreshKey 刷新登陆信息，需要重新在前端缓存
-                        newLoginInfo = validateResult.getBody().getMain();
-                    } else {
-                        // 登陆信息无误且无需刷新身份信息
-                        needRedirectToLoginPage = false;
-                    }
                 }
             } catch (Exception e) {
                 log.warn("鉴权失败，拒绝访问。", e);
             }
         }
 
-        if (needRedirectToLoginPage) {
+        if (!loginSuccess) {
             if (isRedirectByFrontEnd(WebUtils.toHttp(request))) {
                 // 如 ajax 等主页发起的请求无法让主页面直接跳转，需要前端自己进行页面跳转
                 markAsClientEndNeedRedirect(WebUtils.toHttp(response), newLoginInfo);
             } else {
-                // 由服务端直接转发
-                if (newLoginInfo != null) {
-                    WebUtils.issueRedirect(request, response, loginUrl + "?back_url=" + backUrl + "&info=" + newLoginInfo);
-                } else {
-                    WebUtils.issueRedirect(request, response, loginUrl + "?back_url=" + backUrl);
-                }
+                // 由服务端直接跳转
+                WebUtils.issueRedirect(request, response, logoutPath);
             }
         }
 
-        // 仅登陆信息无误且未发生请求转发的请求允许返回 true 继续处理
-        return loginSuccess && !needRedirectToLoginPage;
+        // 仅登陆信息无误返回 true 继续处理
+        return loginSuccess;
     }
 
     private boolean isRedirectByFrontEnd(HttpServletRequest request) {

@@ -46,6 +46,17 @@ public class UserController {
     private long min = 1000 * 60 * 5;
 
     /**
+     * login.html 使用，密文传输
+     */
+    @PostMapping("/user/check/4fe")
+    public ServiceResponse<String> validLoginInfo4fe(@RequestBody String data) {
+        // Base64 默认规范有换行约束、且部分字符与 URL 字符冲突，故 AES 中使用的 Base64.getUrlEncoder()
+        String afterDecrypt = AESUtil.decrypt(data);
+        LoginInInfo loginInInfo = JsonUtil.readAsObject(afterDecrypt, LoginInInfo.class);
+        return validLoginInfo(loginInInfo.getCredentials());
+    }
+
+    /**
      * 后端间直连，无需密文传输
      */
     @PostMapping("/user/check")

@@ -15,8 +15,6 @@ const instance_B = axios.create({
 
 instance_A.interceptors.response.use(function (response) {
     let status = response.status;
-    alert(status)
-    alert(status == 403)
 
     if (status == 200) {
         return response;
@@ -27,18 +25,11 @@ instance_A.interceptors.response.use(function (response) {
         return Promise.reject(response);
     }
 }, function (error) {
+    // 登陆信息有误
     if (error.response.status === 403) {
-        let info = error.response.data["main"];
-        let backUrl = "http://localhost:8081"
-        if (info == null) {
-            window.location.href = "http://localhost:8080/login?back_url=" + backUrl;
-        } else {
-            window.location.href = "http://localhost:8080/login?back_url=" + backUrl + "&info=" + info;
-        }
+        // 登出清空本地无效登陆信息
+        window.location.href = "http://localhost:8081/user/logout";
     }
-
-    // 对响应错误做点什么
-    message.error(error.message, 5);
     return Promise.reject(error);
 });
 
@@ -54,14 +45,10 @@ instance_B.interceptors.response.use(function (response) {
         return Promise.reject(response);
     }
 }, function (error) {
+    // 登陆信息有误
     if (error.response.status === 403) {
-        let info = error.response.data["main"];
-        let backUrl = "http://localhost:8082"
-        if (info == null) {
-            window.location.href = "http://localhost:8080/login?back_url=" + backUrl;
-        } else {
-            window.location.href = "http://localhost:8080/login?back_url=" + backUrl + "&info=" + info;
-        }
+        // 登出清空本地无效登陆信息
+        window.location.href = "http://localhost:8082/user/logout";
     }
 
     // 对响应错误做点什么
@@ -92,6 +79,33 @@ export interface UserCredentials {
 }
 
 export class LoginService {
+    static validateAndAutoRefresh(encryptTokenData?: string,
+                                  successHook?: (input?: ServiceResponse<String>) => void,
+                                  failureHook?: (input?: ServiceResponse<String>) => void,
+                                  beforeHook?: () => void,
+                                  finallyHook?: () => void) {
+        if (beforeHook != null) {
+            beforeHook();
+        }
+
+        instance.post("http://localhost:8080/user/check/4fe", encryptTokenData)
+            .then(response => {
+                if (successHook && response.status == 200) {
+                    let data: ServiceResponse<String> = response.data;
+                    successHook(data);
+                } else if (failureHook && response.status == 403) {
+                    let data: ServiceResponse<String> = response.data;
+                    failureHook(data);
+                }
+            })
+            .finally(() => {
+                    if (finallyHook != null) {
+                        finallyHook();
+                    }
+                }
+            )
+    }
+
     static login(account?: string, password?: string,
                  successHook?: (input?: ServiceResponse<String>) => void,
                  beforeHook?: () => void,

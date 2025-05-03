@@ -23,8 +23,10 @@ import java.util.Map;
 public class ShiroConfig {
     @Value("${user-center.back-url}")
     private String backUrl;
-    @Value("${user-center.api.url.prefix}")
-    private String loginUrl;
+    @Value("#{'${user-center.api.url.prefix}'+'?back_url='+'${user-center.back-url}'}")
+    private String logoutRedirectUrl;
+    @Value("${shiro.local.logout.path}")
+    private String localLogoutPath;
 
     /**
      * @see AbstractShiroWebFilterConfiguration#shiroFilterFactoryBean()
@@ -46,16 +48,14 @@ public class ShiroConfig {
         filterFactoryBean.setShiroFilterConfiguration(shiroFilterConfiguration == null ? new ShiroFilterConfiguration() : shiroFilterConfiguration);
         filterFactoryBean.setGlobalFilters(Collections.singletonList(DefaultFilter.invalidRequest.name()));
         filterFactoryBean.setFilterChainDefinitionMap(shiroFilterChainDefinition.getFilterChainMap());
-        MyAccessControlFilter myAccessControlFilter = new MyAccessControlFilter(loginUrl, backUrl, userCenterClient);
+        MyAccessControlFilter myAccessControlFilter = new MyAccessControlFilter(localLogoutPath, userCenterClient);
 
         MyLoginFilter myLoginFilter = new MyLoginFilter();
-        myLoginFilter.setLoginUrl("http://localhost:8080/sso-login");
-        myLoginFilter.setSuccessUrl("");
 
         // 添加自定义的 Filter
         filterMap.put("myAccessControl", myAccessControlFilter);
         filterMap.put("myFormAuthentication", myLoginFilter);
-        filterMap.put("myLogout", new MyLogoutFilter());
+        filterMap.put("myLogout", new MyLogoutFilter(logoutRedirectUrl));
 
         filterFactoryBean.setFilters(filterMap);
 
@@ -99,7 +99,9 @@ public class ShiroConfig {
         //        chainDefinition.addPathDefinition("/**", "authc");
 
         // user 开头的接口无需鉴权
-        chainDefinition.addPathDefinition("/user/**", "anon");
+        chainDefinition.addPathDefinition("/user/check", "anon");
+        // 登出
+        chainDefinition.addPathDefinition(localLogoutPath, "myLogout");
         // file-entity、time-entity 需要基本的登录
         chainDefinition.addPathDefinition("/file-entity/**", "authc");
         chainDefinition.addPathDefinition("/time-entity/**", "authc");
