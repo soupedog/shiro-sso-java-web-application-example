@@ -23,7 +23,7 @@ import java.util.Map;
 public class ShiroConfig {
     @Value("${user-center.back-url}")
     private String backUrl;
-    @Value("#{'${user-center.api.url.prefix}'+'?back_url='+'${user-center.back-url}'}")
+    @Value("#{'${user-center.api.url.prefix}'+'/login?back_url='+'${user-center.back-url}'}")
     private String logoutRedirectUrl;
     @Value("${shiro.local.logout.path}")
     private String localLogoutPath;

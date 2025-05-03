@@ -22,6 +22,7 @@ public class MyLoginFilter extends AuthenticationFilter {
         LoginInInfo loginInInfo = validateAndReadLoginInfo(request);
 
         if (loginInInfo == null) {
+            // 实际上这里不会触发，下面的 getLoginUrl 也是无效函数
             SSOUtil.logout();
             // 登录信息有问题，让其重新登陆
             WebUtils.issueRedirect(request, response, getLoginUrl());
