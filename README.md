@@ -1,12 +1,20 @@
 # shiro-sso-java-web-application-example
 
-基于 Shiro 的 SSO(SingleSignOn) Java Web 应用示例
+基于 Shiro 的 SSO(SingleSignOn) Java Web 应用示例。
 
-**Warning：**
+试验请先启动三个服务：
+- [a-service](a-service)
+- [b-service](b-service)
+- [user-center-service](user-center-service)
 
-本项目未编写一个前端机制： `a.html`/ `b.html` 登陆状态变更情景对 `login.html` 中的缓存信息更新不够完备，本项目主要关注后端，忽略了该逻辑。
 
-出现未更新登陆信息缓存引发了异常可尝试访问 `http://localhost:8080/?reset=true` 手动清空 `login.html` 的登录缓存
+a、b 服务分别提供一个已登录用户才允许点击的按钮。
+
+一次登录后即可在 a、b 系统中共享登录信息。
+
+[A 系统前端页面](http://localhost:8081/)
+
+[B 系统前端页面](http://localhost:8082/)
 
 **Tips:**
 
