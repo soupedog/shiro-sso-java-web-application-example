@@ -18,6 +18,7 @@ public class MyRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        // 存在权限验证要求时，每次验证都会调用该函数
         LoginInInfo loginInInfo = (LoginInInfo) principalCollection.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         info.addRole("admin");
